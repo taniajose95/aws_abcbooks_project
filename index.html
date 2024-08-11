@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABCBooks - Government Funded Library</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Function to check if the user is authenticated
+        function checkAuthentication() {
+            // Get the authentication code from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+
+            if (code) {
+                // Handle authentication code exchange here
+                // For example, you could send this code to your backend server to exchange it for tokens
+                // Then store authentication state in localStorage
+                localStorage.setItem('isAuthenticated', true);
+                // Redirect to the home page after authentication
+                window.location.href = 'https://draftmxked7gi.cloudfront.net/';
+            } else {
+                const isAuthenticated = localStorage.getItem('isAuthenticated');
+                if (!isAuthenticated) {
+                    // Redirect to Cognito sign-in page if not authenticated
+                    window.location.href = 'https://abc-book.auth.us-east-1.amazoncognito.com/login?client_id=14r12fpth2tf52m1k49u2i3bi5&response_type=code&scope=openid+profile+email&redirect_uri=https://draftmxked7gi.cloudfront.net/';
+                } else {
+                    // Show the page content if authenticated
+                    document.addEventListener('DOMContentLoaded', () => {
+                        document.getElementById('page-container').style.display = 'block';
+                    });
+                }
+            }
+        }
+
+        // Call authentication check as soon as the script is loaded
+        checkAuthentication();
+    </script>
+</head>
+<body>
+    <!-- Content hidden by default, shown only if authenticated -->
+    <div id="page-container" style="display: none;">
+        <header>
+            <div class="banner">
+                <h1>ABCBooks</h1>
+                <p>Government Funded E-Library</p>
+            </div>
+            <nav class="navigation">
+                <button class="nav-button" onclick="showSection('about')">Home</button>
+                <button class="nav-button" onclick="showSection('add-book')">Add Books</button>
+                <button class="nav-button" onclick="showSection('book-list')">View Books</button>
+                <button class="nav-button" id="auth-button">Sign Out</button> <!-- Sign-Out Button -->
+            </nav>
+        </header>
+
+        <main id="content-wrap">
+            <section id="about" class="section">
+                <h2>About Our Library</h2>
+                <p>ABCBooks is a government-funded library initiative aimed at providing free access to knowledge for all citizens. Our extensive collection covers various genres and topics, ensuring that everyone can find something of interest.</p>
+                <div class="action-buttons">
+                    <button id="view-library">View Library Books</button>
+                    <button id="add-ebook">Add a New EBook</button>
+                </div>
+            </section>
+
+            <section id="book-list" class="section" style="display: none;">
+                <h2>Our Collection</h2>
+                <div id="books-container"></div>
+            </section>
+
+            <section id="add-book" class="section" style="display: none;">
+                <h2>Add New Book</h2>
+                <form id="add-book-form">
+                    <div class="input-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="author">Author(s):</label>
+                        <input type="text" id="author" placeholder="Comma-separated" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="publisher">Publisher:</label>
+                        <input type="text" id="publisher">
+                    </div>
+                    <div class="input-group">
+                        <label for="year">Publication Year:</label>
+                        <input type="number" id="year" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="image-file">Book Cover:</label>
+                        <input type="file" id="image-file" accept="image/*">
+                    </div>
+                    <button type="submit">Add Book</button>
+                </form>
+            </section>
+
+            <section id="update-book" class="section" style="display: none;">
+                <h2>Update Book</h2>
+                <form id="update-book-form">
+                    <input type="hidden" id="update-book-id">
+                    <div class="input-group">
+                        <label for="update-title">Title:</label>
+                        <input type="text" id="update-title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="update-author">Author(s):</label>
+                        <input type="text" id="update-author" placeholder="Comma-separated" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="update-publisher">Publisher:</label>
+                        <input type="text" id="update-publisher">
+                    </div>
+                    <div class="input-group">
+                        <label for="update-year">Publication Year:</label>
+                        <input type="number" id="update-year" required>
+                    </div>
+                    <button type="submit">Save Changes</button>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 ABCBooks. All rights reserved by ABC.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add click event listener to sign-out button
+        document.getElementById('auth-button').addEventListener('click', function() {
+            // Clear authentication state and redirect to Cognito logout
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'https://abc-book.auth.us-east-1.amazoncognito.com/logout?client_id=14r12fpth2tf52m1k49u2i3bi5&logout_uri=https://draftmxked7gi.cloudfront.net/';
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(function(section) {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
